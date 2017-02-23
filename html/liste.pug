@@ -1,0 +1,19 @@
+include _head.pug
+.container
+    .row
+      each val in donnees
+            .col-lg-12
+              .row
+                .col-lg-2
+                  p= val.date
+                |
+                .col-lg-7
+                  a(href="/articles/" + val._id)= val.titre
+                |
+                .col-lg-3
+                  //- button Modifier
+                  form(action="/supprimer/" + val._id)
+                      input(type='submit', value="Supprimer l'article")
+              |
+              hr
+include _footer.pug

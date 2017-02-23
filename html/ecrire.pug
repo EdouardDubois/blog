@@ -1,0 +1,22 @@
+include _head.pug
+.container
+    .row
+        .col-lg-12
+          .row
+            .col-lg-12
+              h1 &Eacute;crire un article
+          hr
+          form(name='ecrire', action='submitArticle', method='POST')
+            .col-lg-12
+              label(for='titre') Titre
+              br
+              input.formulaire(type='text', name='titre', required)
+            .col-lg-12
+              br
+              label(for='contenu') Contenu
+              br
+              textarea.contenu(type='text', name='contenu', required)
+            .col-lg-12
+              br
+              input(type='submit', name='envoyer', value='Envoyer')
+include _footer.pug

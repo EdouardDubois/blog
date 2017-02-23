@@ -1,0 +1,75 @@
+include _head.pug
+.container
+    .row
+        .col-lg-8
+          h1= donnees.titre
+          |
+          p= donnees.date
+          |
+          hr
+          |
+          p= donnees.contenu
+          |
+          hr
+          |
+
+          h2 Commentaire(s)
+          |
+          .media
+            a.pull-left(href='#')
+            |
+            .media-body
+              h4.media-heading
+                | Start Bootstrap
+                small August 25, 2014
+              |             Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+          |
+          .media
+            a.pull-left(href='#')
+            |
+            .media-body
+              h4.media-heading
+                | Start Bootstrap
+                small August 25, 2014
+              |             Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+
+        .col-lg-4
+          .well
+            h4 Auteur
+            |
+            .row
+              .col-lg-12
+                img(src='', alt='')
+                |
+                p= donnees.auteur
+          |
+          .well
+            h4 Autres articles
+            |
+            .row
+              .col-lg-12
+                ul.list-unstyled
+                  li
+                    a(href='#') Article 1
+                  |
+                  li
+                    a(href='#') Article 2
+                  |
+                  li
+                    a(href='#') Article 3
+                  |
+                  li
+                    a(href='#') Article 4
+          |
+          .well
+            h4 &Eacute;crire un commentaire
+            |
+            form(role='form')
+              .form-group
+                textarea.form-control(rows='3')
+                br
+                |
+                button.btn.btn-primary(type='submit') Envoyer
+        |
+        hr
+include _footer.pug

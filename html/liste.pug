@@ -1,18 +1,20 @@
 include _head.pug
 .container
     .row
+      h1 Liste des articles
+      br
       each val in donnees
-            .col-lg-12
+            .col-sm-12
               .row
-                .col-lg-2
+                .col-sm-2
                   p= val.date
                 |
-                .col-lg-7
+                .col-sm-7
                   a(href="/articles/" + val._id)= val.titre
                 |
-                .col-lg-3
+                .col-sm-3
                   //- button Modifier
-                  form(action="/supprimer/" + val._id)
+                  form(action="/supprimer/" + val._id method='POST')
                       input(type='submit', value="Supprimer l'article")
               |
               hr

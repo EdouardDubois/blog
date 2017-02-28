@@ -1,5 +1,6 @@
 {
-  "identifiant": "edouard",
-  "mot_de_passe": "dubois",
+  "login": "edouard",
+  "password": "dubois",
+  "nom": "Édouard",
   "niveau": 1
 }

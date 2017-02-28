@@ -2,19 +2,18 @@ include _head.pug
 .container
     .row
       each val in donnees
-            .col-lg-12
+            .col-sm-12
               .row
-                .col-lg-8
+                .col-sm-8
                   h1
                       a(href="/articles/" + val._id)= val.titre
                 |
-                .col-lg-4
+                .col-sm-4
                   h3= val.date
+              br
               |
-              hr
-              |
-              p= val.contenu
-
+              p= val.contenu.split(" ").slice(0,51).join(" ") + "..."
+              a(href="/articles/" + val._id) Lire la suite
               |
               hr
 include _footer.pug

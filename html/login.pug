@@ -1,0 +1,27 @@
+include _head.pug
+.container
+    .row
+        .col-sm-12
+          .row
+            .col-sm-12
+              h1 Se connecter
+          hr
+          form(name='connexion', action='seConnecter', method='POST')
+            .col-sm-12
+              label(for='login') Identifiant
+              br
+              input.formulaire(type='text', name='login', required)
+            .col-sm-12
+              br
+              label(for='Mot de passe') Mot de passe
+              br
+              input.formulaire(type='password', name='password', required)
+            .col-sm-12
+              br
+              input(type='submit', name='envoyer', value='Envoyer')
+              br
+              br
+            p
+              |Vous n'avez pas de compte ? 
+              a(href="/register") Inscrivez-vous.
+include _footer.pug

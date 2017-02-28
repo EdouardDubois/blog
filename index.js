@@ -1,4 +1,11 @@
-/*******************************************************************************
+/*
+
+Sessions
+Users
+
+Cas spécial pour login fail
+
+********************************************************************************
 ************************************* Setup ************************************
 *******************************************************************************/
 
@@ -28,28 +35,32 @@ const MongoClient = require("mongodb").MongoClient;
 const URL = "mongodb://127.0.0.1:27017/blog";
 var maDb;
 
+//Cookies
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+app.use(session({
+  secret:'123456789SECRET',
+  saveUninitialized : false,
+  resave: false,
+  cookie:{}
+}));
+
 /*******************************************************************************
 ************************************* Routes ***********************************
 *******************************************************************************/
 
+/*---------------------------------- Routes ----------------------------------*/
+
 app.get("/", function (req, res) {
+
+  console.log("Cookies: " + chalk.blue(JSON.stringify(req.cookies)));
+  console.log("Session : " + chalk.blue(JSON.stringify(req.session)));
+
   var articles = maDb.collection("articles");
   articles.find({}).toArray(function(err, data){
     res.render("index.pug",{donnees:data.reverse()},function(erreur, donnees){
-      if (erreur) {
-        res.status(404).send("404 - Impossible de charger la page");
-      } else {
-        res.send(donnees);
-      }
-    });
-  });
-});
-
-
-app.get("/liste", function (req, res) {
-  var articles = maDb.collection("articles");
-  articles.find({}).toArray(function(err, data){
-    res.render("liste.pug",{donnees:data.reverse()},function(erreur, donnees){
       if (erreur) {
         res.status(404).send("404 - Impossible de charger la page");
       } else {
@@ -77,6 +88,18 @@ app.get("/articles/:premier",function(req,res){
   });
 });
 
+app.get("/liste", function (req, res) {
+  var articles = maDb.collection("articles");
+  articles.find({}).toArray(function(err, data){
+    res.render("liste.pug",{donnees:data.reverse()},function(erreur, donnees){
+      if (erreur) {
+        res.status(404).send("404 - Impossible de charger la page");
+      } else {
+        res.send(donnees);
+      }
+    });
+  });
+});
 
 app.get("/ecrire",function(req,res){
   res.render("ecrire.pug",function(erreur, data){
@@ -88,13 +111,35 @@ app.get("/ecrire",function(req,res){
   });
 });
 
+app.get("/login",function(req,res){
+  res.render("login.pug",function(erreur, data){
+    if(erreur){
+      res.status(404).send("404 - Impossible de charger la page");
+    } else {
+      res.send(data);
+    }
+  });
+});
 
+app.get("/register",function(req,res){
+  res.render("register.pug",function(erreur, data){
+    if(erreur){
+      res.status(404).send("404 - Impossible de charger la page");
+    } else {
+      res.send(data);
+    }
+  });
+});
+
+/*-------------------------------- Fonctions ---------------------------------*/
+
+// Soumettre un article
 app.use(bodyParser.urlencoded({ extended: false }));
+
 app.post("/submitArticle",function(req,res){
-  console.log(JSON.stringify(req.body));
+  console.log("Un article a été posté avec : " + JSON.stringify(req.body));
 
   laDate = new Date();
-  console.log(laDate.getYear());
   laDate = laDate.getDate() + "/" + (laDate.getMonth()+1) + "/" + laDate.getFullYear();
 
   var articles = maDb.collection("articles");
@@ -110,7 +155,9 @@ app.post("/submitArticle",function(req,res){
     });
   });
 
-  app.get("/supprimer/:premier",function(req,res){
+
+  // Supprimer un article
+  app.post("/supprimer/:premier",function(req,res){
 
     var id = new db.ObjectId(req.params.premier);
     console.log("Supression de l'article à l'Id : " + chalk.yellow(id));
@@ -121,21 +168,78 @@ app.post("/submitArticle",function(req,res){
     });
   });
 
-  // app.use("/",articles);
-  // app.use("/admin",admin);
+  // Se connecter
+  app.post("/seConnecter",function(req,res){
+    console.log("une tentative de connection a été effectuée avec : " + chalk.yellow(JSON.stringify(req.body)));
 
-  /*******************************************************************************
-  ************************************ Serveur ***********************************
-  *******************************************************************************/
-
-  MongoClient.connect(URL, function(err, db) {
-    if (err) {
-      return;
-    }
-    maDb = db;
-    var server = app.listen(8080, function() {
-      var adresseHote = server.address().address;
-      var portEcoute = server.address().port;
-      console.log(chalk.black.bgWhite("Le serveur est bien démarré sur " + adresseHote + ":" + portEcoute));
-      console.log();  });
+    var utilisateurs = maDb.collection("utilisateurs");
+    utilisateurs.find({login:req.body.login}).toArray(function(err, data){
+      if(err){
+        console.log("Impossible de joindre la base de donnée");
+        res.redirect("../500");
+      } else {
+        console.log("La base correspondante contient : " + chalk.blue(JSON.stringify(data)));
+        if(data[0]){
+          if (data[0].login == req.body.login && data[0].password == req.body.password) {
+            console.log("Identification réussie");
+            res.redirect("../#success");
+          } else {
+            console.log("Mot de passe incorrect");
+            res.redirect("../login#fail");
+          }
+        } else {
+          console.log("Identifiant incorrect");
+          res.redirect("../login#fail");
+        }
+      }
     });
+  });
+
+  // Créer un compte
+  app.post("/creerCompte",function(req,res){
+    console.log("une tentative de création a été effectuée avec : " + chalk.yellow(JSON.stringify(req.body)));
+
+    var utilisateurs = maDb.collection("utilisateurs");
+    utilisateurs.find({ $or: [ { login: req.body.login }, { nom: req.body.nom } ] }).toArray(function(err, data){
+      if(err){
+        console.log("Impossible de joindre la base de donnée");
+        res.redirect("../500");
+      } else {
+        if(data[0]){
+          console.log("Cet utilisateur existe déjà");
+          res.redirect("../register#fail");
+        } else {
+          utilisateurs.insert(
+            {
+              login : req.body.login,
+              password : req.body.password,
+              nom : req.body.nom,
+              niveau : 0
+            }
+            ,function(){
+              console.log("Création effectuée");
+              res.redirect("../login");
+            });
+          }
+        }
+      });
+    });
+
+    // app.use("/",articles);
+    // app.use("/admin",admin);
+
+    /*******************************************************************************
+    ************************************ Serveur ***********************************
+    *******************************************************************************/
+
+    MongoClient.connect(URL, function(err, db) {
+      if (err) {
+        return;
+      }
+      maDb = db;
+      var server = app.listen(8080, function() {
+        var adresseHote = server.address().address;
+        var portEcoute = server.address().port;
+        console.log(chalk.black.bgWhite("Le serveur est bien démarré sur " + adresseHote + ":" + portEcoute));
+        console.log();  });
+      });

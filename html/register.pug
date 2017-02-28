@@ -1,0 +1,32 @@
+include _head.pug
+.container
+    .row
+        .col-sm-12
+          .row
+            .col-sm-12
+              h1 Créer un compte
+          hr
+          form(name='creation', action='creerCompte', method='POST')
+            .col-sm-12
+              label(for='login') Identifiant
+              br
+              input.formulaire(type='text', name='login', required)
+            .col-sm-12
+              br
+              label(for='nom') Nom d'affichage
+              br
+              input.formulaire(type='text', name='nom', required)
+            .col-sm-12
+              br
+              label(for='Mot de passe') Mot de passe
+              br
+              input.formulaire(type='password', name='password', required)
+            .col-sm-12
+              br
+              input(type='submit', name='envoyer', value='Envoyer')
+              br
+              br
+            p
+              |Vous avez déjà un compte ? 
+              a(href="/login") Connectez-vous.
+include _footer.pug

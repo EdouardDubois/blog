@@ -2,74 +2,77 @@ include _head.pug
 .container
     .row
         .col-sm-8
-          h1= donnees.titre
+          h1= articleSeul.titre
           |
-          p= donnees.date
+          p= articleSeul.date
           |
           hr
           |
-          p= donnees.contenu
+          p= articleSeul.contenu
           |
           hr
           |
 
           h2 Commentaire(s)
           |
-          .media
-            a.pull-left(href='#')
+          each commentaire in lesCommentaires
+            if session.niveau ==2 || session.nom == articleSeul.auteur || session.nom == commentaire.auteur
+              .row
+                .col-xs-10
+                  .media
+                    .media-body
+                      h4.media-heading
+                        = commentaire.auteur
+                        | &nbsp
+                        small= commentaire.date
+                      = commentaire.contenu
+                .col-xs-1
+                  form(name='supprimerCommentaire' action='/supprimerCommentaire/'+commentaire._id+"/"+articleSeul._id method='POST')
+                    button.btn.btn-danger(type='submit') X
+            else
+              .media
+                .media-body
+                  h4.media-heading
+                    = commentaire.auteur
+                    | &nbsp
+                    small= commentaire.date
+                  = commentaire.contenu
             |
-            .media-body
-              h4.media-heading
-                | Start Bootstrap
-                small August 25, 2014
-              |             Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-          |
-          .media
-            a.pull-left(href='#')
-            |
-            .media-body
-              h4.media-heading
-                | Start Bootstrap
-                small August 25, 2014
-              |             Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+            br
+          br
+          .well
+            if (session.niveau >= 0)
+              form(name='commenter' action='/commenter/' + articleSeul._id method='POST')
+                .form-group
+                  textarea.form-control(rows='3' name='contenu' placeholder="Commenter cet article" required)
+                  br
+                  button.btn.btn-primary(type='submit') Envoyer
+            else
+              p Veuillez vous connecter pour commenter cet article.
 
         .col-sm-4
           .well
             h4 Auteur
-            |
+            hr
             .row
               .col-sm-12
                 img(src='', alt='')
                 |
-                p= donnees.auteur
+                p= articleSeul.auteur
           |
           .well
-            h4 Autres articles
-            |
+            h4 Derniers articles
+            hr
             .row
               .col-sm-12
                 ul.list-unstyled
-                  li
-                    a(href='#') Article 1
-                  |
-                  li
-                    a(href='#') Article 2
-                  |
-                  li
-                    a(href='#') Article 3
-                  |
-                  li
-                    a(href='#') Article 4
+                  each article in tousLesArticles
+                    li
+                      a(href='./' + article._id)= article.titre
+                      br
+                      br
+                    |
           |
-          .well
-            h4 &Eacute;crire un commentaire
-            |
-            form(role='form')
-              .form-group
-                textarea.form-control(rows='3')
-                br
-                |
-                button.btn.btn-primary(type='submit') Envoyer
         |
         hr
 include _footer.pug

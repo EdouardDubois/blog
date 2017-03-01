@@ -34,15 +34,25 @@ head
                 |
                 span.icon-bar
               |
-              a.navbar-brand(href='/') Blog
+              a.navbar-brand(href='/') Titre
             |
             #bs-example-navbar-collapse-1.collapse.navbar-collapse
               ul.nav.navbar-nav
-                li
-                  a(href='/ecrire') &Eacute;crire
-                |
-                li
-                  a(href='../liste') Liste
-                |
-                li
-                  a(href='/login') Login
+                if session.niveau >= 1
+                  li
+                    a(href='/ecrire') &Eacute;crire
+                  |
+                if session.niveau >= 1
+                  li
+                    a(href='../liste') Articles
+                  |
+                if session.niveau >= 2
+                  li
+                    a(href='../utilisateurs') Utilisateurs
+                  |
+                if session.niveau >=0
+                  li
+                    a(href='/login')= session.nom
+                else
+                  li
+                    a(href='/login') Login

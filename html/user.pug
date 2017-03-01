@@ -1,0 +1,24 @@
+include _head.pug
+.container
+    .row
+        .col-sm-12
+          .row
+            .col-sm-12
+              h1= session.nom
+              hr
+              h4 Utilisateur
+              p
+               | Votre numéro d'utilisateur est :
+               = session._id
+              h4 Niveau de droits
+              if session.niveau == 0
+                p Vous êtes connecté en tant que visiteur.
+              if session.niveau == 1
+                p Vous êtes connecté en tant que contributeur.
+              if session.niveau == 2
+                p Vous êtes connecté en tant qu'administrateur.
+              br
+              form(action="/deconnecter" method='POST')
+                  input(type='submit', value="Vous déconnecter")
+
+include _footer.pug

@@ -9,7 +9,10 @@ include _head.pug
                 .col-sm-2
                   p= val.date
                 |
-                .col-sm-7
+                .col-sm-2
+                  p= val.auteur
+                |
+                .col-sm-5
                   a(href="/articles/" + val._id)= val.titre
                 |
                 .col-sm-3

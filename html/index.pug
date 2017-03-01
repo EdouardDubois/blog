@@ -12,8 +12,15 @@ include _head.pug
                   h3= val.date
               br
               |
-              p= val.contenu.split(" ").slice(0,51).join(" ") + "..."
-              a(href="/articles/" + val._id) Lire la suite
+              p
+                = val.contenu.split(" ").slice(0,50).join(" ")
+                if val.contenu.length >= 50
+                  span ...
+                  br
+                  br
+                  a(href="/articles/" + val._id) Lire la suite
+                br
+                br
               |
               hr
 include _footer.pug

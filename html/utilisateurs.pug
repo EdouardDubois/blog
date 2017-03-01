@@ -1,0 +1,43 @@
+include _head.pug
+.container
+    .row
+      h1 Liste des utilisateurs
+      br
+      each val in donnees
+            .col-sm-12
+              .row
+                if(val.niveau ==0)
+                  .col-sm-4
+                    p= val._id
+                  |
+                  .col-sm-4
+                    p= val.nom
+                  |
+                else if (val.niveau ==1)
+                  .col-sm-4
+                    p.orange= val._id
+                  |
+                  .col-sm-4
+                    p.orange= val.nom
+                  |
+                else
+                  .col-sm-4
+                    p.red= val._id
+                  |
+                  .col-sm-4
+                    p.red= val.nom
+                  |
+                .col-sm-4
+                  form(action="/modificationDroits/" + val._id method='POST')
+                    select(name='niveau')
+                      option(value=0 selected=val.niveau==0) Visiteur
+                      |
+                      option(value=1 selected=val.niveau==1) Redacteur
+                      |
+                      option(value=2 selected=val.niveau==2) Admin
+                      |
+                    span   &nbsp
+                    input(type='submit', value='Modifier')
+              |
+              hr
+include _footer.pug
